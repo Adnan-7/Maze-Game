@@ -1,6 +1,6 @@
 const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
 
-const cellsHorizontal = 14;
+const cellsHorizontal = 10;
 const cellsVertical = 10;
 const width = window.innerWidth;
 const height = window.innerHeight;
@@ -209,4 +209,23 @@ document.addEventListener('keydown', (event) => {
   if (event.keyCode === 65) {
     Body.setVelocity(ball, { x: x - 5, y });
   }
+});
+
+// Win Condition
+Events.on(engine, 'collisionStart', (event) => {
+  event.pairs.forEach((collision) => {
+    const labels = ['ball', 'goal'];
+
+    if (
+      labels.includes(collision.bodyA.label) &&
+      labels.includes(collision.bodyB.label)
+    ) {
+      world.gravity.y = 1;
+      world.bodies.forEach((body) => {
+        if (body.label === 'wall') {
+          Body.setStatic(body, false);
+        }
+      });
+    }
+  });
 });
